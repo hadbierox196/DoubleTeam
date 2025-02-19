@@ -37,6 +37,57 @@
             letter-spacing: 2px;
         }
 
+        .search-container {
+            position: relative;
+            margin: 2rem 0;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 1rem;
+            background-color: #1a1a1a;
+            border: 2px solid #FFD700;
+            color: #FFD700;
+            font-size: 1.1rem;
+            border-radius: 5px;
+            outline: none;
+        }
+
+        .search-input::placeholder {
+            color: #FFD700;
+            opacity: 0.5;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: #1a1a1a;
+            border: 2px solid #FFD700;
+            border-top: none;
+            border-radius: 0 0 5px 5px;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+        }
+
+        .dropdown.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        .dropdown-item {
+            padding: 0.8rem 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .dropdown-item:hover {
+            background-color: #333;
+        }
+
         .teams-container {
             display: flex;
             justify-content: space-around;
@@ -52,39 +103,18 @@
             width: 45%;
             min-width: 250px;
             text-align: center;
+            cursor: pointer;
             transform: scale(1);
             transition: transform 0.3s ease;
             border: 2px solid #FFD700;
         }
 
+        .team-box:hover {
+            transform: scale(1.02);
+        }
+
         .team-box.selected {
             animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .button {
-            background-color: #FFD700;
-            color: #000;
-            border: none;
-            padding: 1rem 2rem;
-            font-size: 1.2rem;
-            border-radius: 5px;
-            cursor: pointer;
-            margin: 2rem auto;
-            display: block;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            transition: all 0.3s ease;
-        }
-
-        .button:hover {
-            transform: scale(1.05);
-            background-color: #FFF;
         }
 
         .player-list {
@@ -103,7 +133,24 @@
             animation: fadeIn 0.5s forwards;
         }
 
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -123,22 +170,20 @@
             h1 {
                 font-size: 1.5rem;
             }
-
-            .button {
-                width: 100%;
-                font-size: 1rem;
-            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Team Player Matcher</h1>
-        <div class="teams-container">
-            <div class="team-box" id="team1">Team 1</div>
-            <div class="team-box" id="team2">Team 2</div>
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search for a player..." id="searchInput">
+            <div class="dropdown" id="dropdown"></div>
         </div>
-        <button class="button" id="randomizeBtn">Randomize Teams</button>
+        <div class="teams-container">
+            <div class="team-box" id="team1">Tap to select team</div>
+            <div class="team-box" id="team2">Tap to select team</div>
+        </div>
         <div class="player-list" id="playerList"></div>
     </div>
 
@@ -146,63 +191,81 @@
         // Sample data - replace with your actual data
         const teams = ['Arsenal', 'Chelsea', 'Manchester United', 'Liverpool'];
         const players = [
-            { name: 'Player 1', teams: ['Arsenal', 'Chelsea'] },
-            { name: 'Player 2', teams: ['Manchester United', 'Liverpool'] }
+            { name: 'John Terry', teams: ['Arsenal', 'Chelsea'] },
+            { name: 'Robin van Persie', teams: ['Arsenal', 'Manchester United'] },
+            { name: 'Michael Owen', teams: ['Liverpool', 'Manchester United'] }
         ];
 
+        const searchInput = document.getElementById('searchInput');
+        const dropdown = document.getElementById('dropdown');
         const team1Element = document.getElementById('team1');
         const team2Element = document.getElementById('team2');
-        const randomizeBtn = document.getElementById('randomizeBtn');
         const playerList = document.getElementById('playerList');
 
-        function getRandomTeams() {
-            const shuffled = [...teams].sort(() => 0.5 - Math.random());
-            return [shuffled[0], shuffled[1]];
+        function getRandomTeam(excludeTeam) {
+            const availableTeams = teams.filter(team => team !== excludeTeam);
+            return availableTeams[Math.floor(Math.random() * availableTeams.length)];
         }
 
-        function findMatchingPlayers(team1, team2) {
-            return players.filter(player => 
-                player.teams.includes(team1) && player.teams.includes(team2)
+        function updateDropdown(searchText) {
+            dropdown.innerHTML = '';
+            if (!searchText) {
+                dropdown.classList.remove('active');
+                return;
+            }
+
+            const matchingPlayers = players.filter(player =>
+                player.name.toLowerCase().includes(searchText.toLowerCase())
             );
+
+            if (matchingPlayers.length > 0) {
+                matchingPlayers.forEach(player => {
+                    const div = document.createElement('div');
+                    div.className = 'dropdown-item';
+                    div.textContent = player.name;
+                    div.addEventListener('click', () => {
+                        searchInput.value = player.name;
+                        dropdown.classList.remove('active');
+                        displayPlayerTeams(player);
+                    });
+                    dropdown.appendChild(div);
+                });
+                dropdown.classList.add('active');
+            } else {
+                dropdown.classList.remove('active');
+            }
         }
 
-        function displayMatchingPlayers(matchingPlayers) {
-            playerList.innerHTML = '';
-            matchingPlayers.forEach((player, index) => {
-                setTimeout(() => {
-                    const playerCard = document.createElement('div');
-                    playerCard.className = 'player-card';
-                    playerCard.textContent = player.name;
-                    playerList.appendChild(playerCard);
-                }, index * 200);
-            });
+        function displayPlayerTeams(player) {
+            team1Element.textContent = player.teams[0];
+            team2Element.textContent = player.teams[1];
+            team1Element.classList.add('selected');
+            team2Element.classList.add('selected');
         }
 
-        randomizeBtn.addEventListener('click', () => {
-            // Remove previous selections
+        searchInput.addEventListener('input', (e) => {
+            updateDropdown(e.target.value);
+        });
+
+        team1Element.addEventListener('click', () => {
             team1Element.classList.remove('selected');
+            const newTeam = getRandomTeam(team2Element.textContent);
+            team1Element.textContent = newTeam;
+            team1Element.classList.add('selected');
+        });
+
+        team2Element.addEventListener('click', () => {
             team2Element.classList.remove('selected');
-            playerList.innerHTML = '';
+            const newTeam = getRandomTeam(team1Element.textContent);
+            team2Element.textContent = newTeam;
+            team2Element.classList.add('selected');
+        });
 
-            // Get and display new teams
-            const [team1, team2] = getRandomTeams();
-            
-            // Animate team selection
-            setTimeout(() => {
-                team1Element.textContent = team1;
-                team1Element.classList.add('selected');
-            }, 0);
-
-            setTimeout(() => {
-                team2Element.textContent = team2;
-                team2Element.classList.add('selected');
-            }, 500);
-
-            // Find and display matching players
-            setTimeout(() => {
-                const matchingPlayers = findMatchingPlayers(team1, team2);
-                displayMatchingPlayers(matchingPlayers);
-            }, 1000);
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.remove('active');
+            }
         });
     </script>
 </body>
