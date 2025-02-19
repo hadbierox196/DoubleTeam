@@ -117,33 +117,66 @@
             animation: pulse 1.5s infinite;
         }
 
-        .player-list {
-            margin-top: 2rem;
+        .victory-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .victory-screen.active {
+            opacity: 1;
+            pointer-events: auto;
+            animation: victoryPulse 2s infinite;
+        }
+
+        .victory-text {
+            font-size: 4rem;
+            color: #FFD700;
+            text-transform: uppercase;
+            margin-bottom: 1rem;
+            text-align: center;
+            animation: bounce 1s infinite;
+        }
+
+        .player-name {
+            font-size: 2rem;
+            color: #FFD700;
+            margin-bottom: 2rem;
             text-align: center;
         }
 
-        .player-card {
-            background-color: #1a1a1a;
-            padding: 1rem;
-            margin: 1rem 0;
+        .close-button {
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
             border-radius: 5px;
-            border: 2px solid #FFD700;
-            opacity: 0;
-            transform: translateY(20px);
-            animation: fadeIn 0.5s forwards;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            transition: transform 0.3s ease;
+        }
+
+        .close-button:hover {
+            transform: scale(1.1);
         }
 
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
-        }
-
-        @keyframes fadeIn {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         @keyframes slideDown {
@@ -157,6 +190,17 @@
             }
         }
 
+        @keyframes victoryPulse {
+            0% { background-color: rgba(0, 0, 0, 0.9); }
+            50% { background-color: rgba(0, 0, 0, 0.7); }
+            100% { background-color: rgba(0, 0, 0, 0.9); }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
         @media (max-width: 600px) {
             .teams-container {
                 flex-direction: column;
@@ -168,6 +212,14 @@
             }
 
             h1 {
+                font-size: 1.5rem;
+            }
+
+            .victory-text {
+                font-size: 2.5rem;
+            }
+
+            .player-name {
                 font-size: 1.5rem;
             }
         }
@@ -184,23 +236,36 @@
             <div class="team-box" id="team1">Tap to select team</div>
             <div class="team-box" id="team2">Tap to select team</div>
         </div>
-        <div class="player-list" id="playerList"></div>
+    </div>
+
+    <div class="victory-screen" id="victoryScreen">
+        <div class="victory-text">You Win!</div>
+        <div class="player-name" id="victoryPlayerName"></div>
+        <button class="close-button" id="closeVictory">Continue</button>
     </div>
 
     <script>
         // Sample data - replace with your actual data
         const teams = ['Arsenal', 'Chelsea', 'Manchester United', 'Liverpool'];
         const players = [
-            { name: 'John Terry', teams: ['Arsenal', 'Chelsea'] },
-            { name: 'Robin van Persie', teams: ['Arsenal', 'Manchester United'] },
-            { name: 'Michael Owen', teams: ['Liverpool', 'Manchester United'] }
+            { 
+                name: 'John Terry', 
+                teams: ['Arsenal', 'Chelsea']
+            },
+            { 
+                name: 'Robin van Persie', 
+                teams: ['Arsenal', 'Manchester United']
+            },
+            { 
+                name: 'Michael Owen', 
+                teams: ['Liverpool', 'Manchester United']
+            }
         ];
 
         const searchInput = document.getElementById('searchInput');
         const dropdown = document.getElementById('dropdown');
         const team1Element = document.getElementById('team1');
         const team2Element = document.getElementById('team2');
-        const playerList = document.getElementById('playerList');
 
         function getRandomTeam(excludeTeam) {
             const availableTeams = teams.filter(team => team !== excludeTeam);
@@ -241,6 +306,25 @@
             team2Element.textContent = player.teams[1];
             team1Element.classList.add('selected');
             team2Element.classList.add('selected');
+            showVictoryScreen(player.name);
+        }
+
+        function checkForMatch(selectedTeams) {
+            const matchingPlayer = players.find(player => 
+                player.teams.includes(selectedTeams[0]) && 
+                player.teams.includes(selectedTeams[1])
+            );
+
+            if (matchingPlayer) {
+                showVictoryScreen(matchingPlayer.name);
+            }
+        }
+
+        function showVictoryScreen(playerName) {
+            const victoryScreen = document.getElementById('victoryScreen');
+            const playerNameElement = document.getElementById('victoryPlayerName');
+            playerNameElement.textContent = playerName;
+            victoryScreen.classList.add('active');
         }
 
         searchInput.addEventListener('input', (e) => {
@@ -252,6 +336,10 @@
             const newTeam = getRandomTeam(team2Element.textContent);
             team1Element.textContent = newTeam;
             team1Element.classList.add('selected');
+            
+            if (team2Element.textContent !== 'Tap to select team') {
+                checkForMatch([newTeam, team2Element.textContent]);
+            }
         });
 
         team2Element.addEventListener('click', () => {
@@ -259,6 +347,14 @@
             const newTeam = getRandomTeam(team1Element.textContent);
             team2Element.textContent = newTeam;
             team2Element.classList.add('selected');
+            
+            if (team1Element.textContent !== 'Tap to select team') {
+                checkForMatch([team1Element.textContent, newTeam]);
+            }
+        });
+
+        document.getElementById('closeVictory').addEventListener('click', () => {
+            document.getElementById('victoryScreen').classList.remove('active');
         });
 
         // Close dropdown when clicking outside
