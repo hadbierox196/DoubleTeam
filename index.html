@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Team Player Matcher</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        body {
+            background-color: #000;
+            color: #FFD700;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 90%;
+            margin: 2rem auto;
+            padding: 1rem;
+        }
+
+        h1 {
+            text-align: center;
+            margin: 2rem 0;
+            font-size: 2rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .teams-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 2rem 0;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .team-box {
+            background-color: #1a1a1a;
+            padding: 1.5rem;
+            border-radius: 10px;
+            width: 45%;
+            min-width: 250px;
+            text-align: center;
+            transform: scale(1);
+            transition: transform 0.3s ease;
+            border: 2px solid #FFD700;
+        }
+
+        .team-box.selected {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .button {
+            background-color: #FFD700;
+            color: #000;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 2rem auto;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            background-color: #FFF;
+        }
+
+        .player-list {
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .player-card {
+            background-color: #1a1a1a;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 5px;
+            border: 2px solid #FFD700;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .teams-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .team-box {
+                width: 100%;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .button {
+                width: 100%;
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Team Player Matcher</h1>
+        <div class="teams-container">
+            <div class="team-box" id="team1">Team 1</div>
+            <div class="team-box" id="team2">Team 2</div>
+        </div>
+        <button class="button" id="randomizeBtn">Randomize Teams</button>
+        <div class="player-list" id="playerList"></div>
+    </div>
+
+    <script>
+        // Sample data - replace with your actual data
+        const teams = ['Arsenal', 'Chelsea', 'Manchester United', 'Liverpool'];
+        const players = [
+            { name: 'Player 1', teams: ['Arsenal', 'Chelsea'] },
+            { name: 'Player 2', teams: ['Manchester United', 'Liverpool'] }
+        ];
+
+        const team1Element = document.getElementById('team1');
+        const team2Element = document.getElementById('team2');
+        const randomizeBtn = document.getElementById('randomizeBtn');
+        const playerList = document.getElementById('playerList');
+
+        function getRandomTeams() {
+            const shuffled = [...teams].sort(() => 0.5 - Math.random());
+            return [shuffled[0], shuffled[1]];
+        }
+
+        function findMatchingPlayers(team1, team2) {
+            return players.filter(player => 
+                player.teams.includes(team1) && player.teams.includes(team2)
+            );
+        }
+
+        function displayMatchingPlayers(matchingPlayers) {
+            playerList.innerHTML = '';
+            matchingPlayers.forEach((player, index) => {
+                setTimeout(() => {
+                    const playerCard = document.createElement('div');
+                    playerCard.className = 'player-card';
+                    playerCard.textContent = player.name;
+                    playerList.appendChild(playerCard);
+                }, index * 200);
+            });
+        }
+
+        randomizeBtn.addEventListener('click', () => {
+            // Remove previous selections
+            team1Element.classList.remove('selected');
+            team2Element.classList.remove('selected');
+            playerList.innerHTML = '';
+
+            // Get and display new teams
+            const [team1, team2] = getRandomTeams();
+            
+            // Animate team selection
+            setTimeout(() => {
+                team1Element.textContent = team1;
+                team1Element.classList.add('selected');
+            }, 0);
+
+            setTimeout(() => {
+                team2Element.textContent = team2;
+                team2Element.classList.add('selected');
+            }, 500);
+
+            // Find and display matching players
+            setTimeout(() => {
+                const matchingPlayers = findMatchingPlayers(team1, team2);
+                displayMatchingPlayers(matchingPlayers);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
