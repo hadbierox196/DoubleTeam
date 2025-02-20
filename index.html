@@ -246,20 +246,108 @@
 
     <script>
         // Sample data - replace with your actual data
-        const teams = ['Arsenal', 'Chelsea', 'Manchester United', 'Liverpool'];
+        const teams = [
+    'Arsenal', 
+    'Chelsea', 
+    'Manchester United', 
+    'Liverpool', 
+    'Barcelona', 
+    'Real Madrid', 
+    'Bayern Munich', 
+    'Paris Saint-Germain', 
+    'Juventus', 
+    'AC Milan', 
+    'Inter Milan', 
+    'Atletico Madrid', 
+    'Borussia Dortmund', 
+    'Tottenham Hotspur', 
+    'Manchester City'
+];
         const players = [
-            { 
-                name: 'John Terry', 
-                teams: ['Arsenal', 'Chelsea']
-            },
-            { 
-                name: 'Robin van Persie', 
-                teams: ['Arsenal', 'Manchester United']
-            },
-            { 
-                name: 'Michael Owen', 
-                teams: ['Liverpool', 'Manchester United']
-            }
+
+    { name: 'Marcus Bent', teams: ['Crystal Palace', 'Blackburn Rovers', 'Ipswich Town', 'Leicester City', 'Everton', 'Charlton Athletic', 'Wigan Athletic', 'Wolverhampton Wanderers'] },
+    { name: 'Peter Crouch', teams: ['Aston Villa', 'Southampton', 'Liverpool', 'Portsmouth', 'Tottenham Hotspur', 'Stoke City', 'Burnley'] },
+    { name: 'Andy Cole', teams: ['Newcastle United', 'Manchester United', 'Blackburn Rovers', 'Fulham', 'Manchester City', 'Portsmouth', 'Sunderland'] },
+    { name: 'Wayne Routledge', teams: ['Crystal Palace', 'Tottenham Hotspur', 'Portsmouth', 'Fulham', 'Aston Villa', 'Newcastle United', 'Swansea City'] },
+    { name: 'Tal Ben Haim', teams: ['Bolton Wanderers', 'Chelsea', 'Manchester City', 'Sunderland', 'Portsmouth', 'West Ham United', 'Queens Park Rangers'] },
+    { name: 'Craig Bellamy', teams: ['Coventry City', 'Newcastle United', 'Blackburn Rovers', 'Liverpool', 'West Ham United', 'Manchester City', 'Cardiff City'] },
+    { name: 'Nicolas Anelka', teams: ['Arsenal', 'Liverpool', 'Manchester City', 'Bolton Wanderers', 'Chelsea', 'West Bromwich Albion'] },
+    { name: 'James Milner', teams: ['Leeds United', 'Newcastle United', 'Aston Villa', 'Manchester City', 'Liverpool', 'Brighton & Hove Albion'] },
+    { name: 'Robbie Keane', teams: ['Coventry City', 'Leeds United', 'Tottenham Hotspur', 'Liverpool', 'West Ham United', 'Aston Villa'] },
+    { name: 'Scott Parker', teams: ['Charlton Athletic', 'Chelsea', 'Newcastle United', 'West Ham United', 'Tottenham Hotspur', 'Fulham'] },
+    { name: 'Les Ferdinand', teams: ['Queens Park Rangers', 'Newcastle United', 'Tottenham Hotspur', 'West Ham United', 'Leicester City', 'Bolton Wanderers'] },
+    { name: 'Nick Barmby', teams: ['Tottenham Hotspur', 'Middlesbrough', 'Everton', 'Liverpool', 'Leeds United', 'Hull City'] },
+    { name: 'Darren Bent', teams: ['Ipswich Town', 'Charlton Athletic', 'Sunderland', 'Tottenham Hotspur', 'Aston Villa', 'Fulham'] },
+    { name: 'Scott Sinclair', teams: ['Chelsea', 'Wigan Athletic', 'Swansea City', 'Manchester City', 'West Bromwich Albion', 'Aston Villa'] },
+    { name: 'Louis Saha', teams: ['Newcastle United', 'Fulham', 'Manchester United', 'Everton', 'Tottenham Hotspur', 'Sunderland'] },
+    { name: 'Craig Gardner', teams: ['Aston Villa', 'Birmingham City', 'Sunderland', 'West Bromwich Albion', 'Sheffield United'] },
+    { name: 'Jermain Defoe', teams: ['Tottenham Hotspur', 'West Ham United', 'Portsmouth', 'Sunderland', 'Bournemouth'] },
+    { name: 'David Bentley', teams: ['Arsenal', 'Blackburn Rovers', 'Tottenham Hotspur', 'Tottenham Hotspur', 'Southend United'] },
+    { name: 'Michael Owen', teams: ['Liverpool', 'Real Madrid', 'Newcastle United', 'Manchester United', 'Stoke City'] },
+    { name: 'John Terry', teams: ['Chelsea'] },
+            
+    { name: 'Ryan Giggs', teams: ['Manchester United'] },
+    { name: 'Steven Gerrard', teams: ['Liverpool'] },
+    { name: 'Frank Lampard', teams: ['West Ham United', 'Chelsea', 'Manchester City'] },
+    { name: 'Wayne Rooney', teams: ['Everton', 'Manchester United', 'DC United'] },
+    { name: 'David Beckham', teams: ['Manchester United', 'Real Madrid', 'LA Galaxy', 'Paris Saint-Germain'] },
+    { name: 'Paul Scholes', teams: ['Manchester United'] },
+    { name: 'Gary Neville', teams: ['Manchester United'] },
+    { name: 'Rio Ferdinand', teams: ['West Ham United', 'Leeds United', 'Manchester United'] },
+    { name: 'Michael Carrick', teams: ['West Ham United', 'Tottenham Hotspur', 'Manchester United'] },
+    { name: 'Dimitar Berbatov', teams: ['Tottenham Hotspur', 'Manchester United', 'Fulham'] },
+    { name: 'Yaya Touré', teams: ['Olympiacos', 'Monaco', 'Barcelona', 'Manchester City'] },
+    { name: 'Thierry Henry', teams: ['AS Monaco', 'Arsenal', 'Barcelona', 'New York Red Bulls'] },
+    { name: 'Cristiano Ronaldo', teams: ['Sporting CP', 'Manchester United', 'Real Madrid', 'Juventus', 'Al Nassr'] },
+    { name: 'Sergio Agüero', teams: ['Independiente', 'Atletico Madrid', 'Manchester City'] },
+    { name: 'Robin van Persie', teams: ['Feyenoord', 'Arsenal', 'Manchester United'] },
+    { name: 'Kevin De Bruyne', teams: ['Chelsea', 'Werder Bremen', 'VfL Wolfsburg', 'Manchester City'] },
+    { name: 'Eden Hazard', teams: ['Lille', 'Chelsea', 'Real Madrid'] },
+    { name: 'Sadio Mane', teams: ['Metz', 'Red Bull Salzburg', 'Southampton', 'Liverpool', 'Bayern Munich'] },
+    { name: 'Mohamed Salah', teams: ['El Mokawloon', 'Basel', 'Chelsea', 'Roma', 'Liverpool'] },
+    { name: 'Gerard Piqué', teams: ['Manchester United', 'Barcelona'] } ,
+            
+    { name: 'Zlatan Ibrahimović', teams: ['Ajax', 'Juventus', 'Inter Milan', 'Barcelona', 'AC Milan', 'Paris Saint-Germain', 'Manchester United', 'LA Galaxy'] },
+    { name: 'Carlos Tévez', teams: ['Boca Juniors', 'Corinthians', 'West Ham United', 'Manchester United', 'Manchester City', 'Juventus', 'Shanghai Shenhua'] },
+    { name: 'Didier Drogba', teams: ['Le Mans', 'Guingamp', 'Marseille', 'Chelsea', 'Galatasaray'] },
+    { name: 'Luis Suárez', teams: ['Nacional', 'Grêmio', 'Ajax', 'Liverpool', 'Barcelona', 'Atlético Madrid'] },
+    { name: 'Gareth Bale', teams: ['Southampton', 'Tottenham Hotspur', 'Real Madrid', 'LAFC'] },
+    { name: 'Kylian Mbappé', teams: ['Monaco', 'Paris Saint-Germain'] },
+    { name: 'Neymar Jr.', teams: ['Santos', 'Barcelona', 'Paris Saint-Germain'] },
+    { name: 'Harry Kane', teams: ['Tottenham Hotspur', 'Bayern Munich'] },
+    { name: 'Luka Modrić', teams: ['Dinamo Zagreb', 'Tottenham Hotspur', 'Real Madrid'] },
+    { name: 'Tony Kroos', teams: ['Bayer Leverkusen', 'Real Madrid'] },
+    { name: 'Arjen Robben', teams: ['Groningen', 'PSV Eindhoven', 'Chelsea', 'Bayern Munich'] },
+    { name: 'Franck Ribéry', teams: ['Bayer Munich', 'Fiorentina'] },
+    { name: 'Andrea Pirlo', teams: ['Brescia', 'Inter Milan', 'AC Milan', 'Juventus', 'New York City FC'] },
+    { name: 'Xavi Hernández', teams: ['Barcelona', 'Al-Sadd'] },
+    { name: 'Iker Casillas', teams: ['Real Madrid', 'Porto'] },
+    { name: 'Manuel Neuer', teams: ['Schalke 04', 'Bayern Munich'] },
+    { name: 'Jan Oblak', teams: ['Benfica', 'Atletico Madrid'] },
+    { name: 'Marc-André ter Stegen', teams: ['Borussia Mönchengladbach', 'Barcelona'] },
+    { name: 'Virgil van Dijk', teams: ['Groningen', 'Celtic', 'Southampton', 'Liverpool'] },
+    { name: 'Sergio Ramos', teams: ['Sevilla', 'Real Madrid', 'Paris Saint-Germain'] } ,
+           
+    { name: 'Roberto Firmino', teams: ['Hoffenheim', 'Liverpool'] },
+    { name: 'David Silva', teams: ['Valencia', 'Manchester City', 'Real Sociedad'] },
+    { name: 'Juan Mata', teams: ['Valencia', 'Chelsea', 'Manchester United'] },
+    { name: 'Cesc Fàbregas', teams: ['Arsenal', 'Barcelona', 'Chelsea', 'Monaco'] },
+    { name: 'Samir Nasri', teams: ['Marseille', 'Arsenal', 'Manchester City', 'Sevilla', 'Antalyaspor'] },
+    { name: 'Mikel Arteta', teams: ['Paris Saint-Germain', 'Everton', 'Arsenal'] },
+    { name: 'Jack Wilshere', teams: ['Arsenal', 'Bournemouth', 'West Ham United'] },
+    { name: 'David Luiz', teams: ['Benfica', 'Chelsea', 'Paris Saint-Germain', 'Arsenal'] },
+    { name: 'Thiago Silva', teams: ['Fluminense', 'Chelsea', 'Paris Saint-Germain'] },
+    { name: 'N’Golo Kanté', teams: ['Caen', 'Leicester City', 'Chelsea'] },
+    { name: 'Antonio Rudiger', teams: ['VfB Stuttgart', 'Roma', 'Chelsea'] },
+    { name: 'Matthijs de Ligt', teams: ['Ajax', 'Juventus', 'Bayern Munich'] },
+    { name: 'Raphaël Varane', teams: ['Lens', 'Real Madrid', 'Manchester United'] },
+    { name: 'Kostas Manolas', teams: ['Olympiacos', 'Roma', 'Napoli'] },
+    { name: 'Vincent Kompany', teams: ['Anderlecht', 'Manchester City'] },
+    { name: 'Gerard Deulofeu', teams: ['Barcelona', 'Everton', 'Milan', 'Watford'] },
+    { name: 'Wilfried Zaha', teams: ['Crystal Palace', 'Manchester United', 'Cardiff City (loan)'] },
+    { name: 'Richarlison', teams: ['Fluminense', 'Watford', 'Everton', 'Tottenham Hotspur'] },
+    { name: 'Raheem Sterling', teams: ['Liverpool', 'Manchester City', 'Chelsea'] }, 
+            
         ];
 
         const searchInput = document.getElementById('searchInput');
