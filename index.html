@@ -351,106 +351,106 @@
         ];
 
         const searchInput = document.getElementById('searchInput');
-        const dropdown = document.getElementById('dropdown');
-        const team1Element = document.getElementById('team1');
-        const team2Element = document.getElementById('team2');
+const dropdown = document.getElementById('dropdown');
+const team1Element = document.getElementById('team1');
+const team2Element = document.getElementById('team2');
 
-        function getRandomTeam(excludeTeam) {
-            const availableTeams = teams.filter(team => team !== excludeTeam);
-            return availableTeams[Math.floor(Math.random() * availableTeams.length)];
-        }
+function getRandomTeam(excludeTeam) {
+    const availableTeams = teams.filter(team => team !== excludeTeam);
+    return availableTeams[Math.floor(Math.random() * availableTeams.length)];
+}
 
-        function updateDropdown(searchText) {
-            dropdown.innerHTML = '';
-            if (!searchText) {
+function updateDropdown(searchText) {
+    dropdown.innerHTML = '';
+    if (!searchText) {
+        dropdown.classList.remove('active');
+        return;
+    }
+
+    const matchingPlayers = players.filter(player =>
+        player.name.toLowerCase().includes(searchText.toLowerCase())
+    );
+
+    if (matchingPlayers.length > 0) {
+        matchingPlayers.forEach(player => {
+            const div = document.createElement('div');
+            div.className = 'dropdown-item';
+            div.textContent = player.name;
+            div.addEventListener('click', () => {
+                searchInput.value = player.name;
                 dropdown.classList.remove('active');
-                return;
-            }
-
-            const matchingPlayers = players.filter(player =>
-                player.name.toLowerCase().includes(searchText.toLowerCase())
-            );
-
-            if (matchingPlayers.length > 0) {
-                matchingPlayers.forEach(player => {
-                    const div = document.createElement('div');
-                    div.className = 'dropdown-item';
-                    div.textContent = player.name;
-                    div.addEventListener('click', () => {
-                        searchInput.value = player.name;
-                        dropdown.classList.remove('active');
-                        displayPlayerTeams(player);
-                    });
-                    dropdown.appendChild(div);
-                });
-                dropdown.classList.add('active');
-            } else {
-                dropdown.classList.remove('active');
-            }
-        }
-
-        function displayPlayerTeams(player) {
-            team1Element.textContent = player.teams[0];
-            team2Element.textContent = player.teams[1];
-            team1Element.classList.add('selected');
-            team2Element.classList.add('selected');
-            showVictoryScreen(player.name);
-        }
-
-        function checkForMatch(selectedTeams) {
-            const matchingPlayer = players.find(player => 
-                player.teams.includes(selectedTeams[0]) && 
-                player.teams.includes(selectedTeams[1])
-            );
-
-            if (matchingPlayer) {
-                showVictoryScreen(matchingPlayer.name);
-            }
-        }
-
-        function showVictoryScreen(playerName) {
-            const victoryScreen = document.getElementById('victoryScreen');
-            const playerNameElement = document.getElementById('victoryPlayerName');
-            playerNameElement.textContent = playerName;
-            victoryScreen.classList.add('active');
-        }
-
-        searchInput.addEventListener('input', (e) => {
-            updateDropdown(e.target.value);
+                displayPlayerTeams(player);
+            });
+            dropdown.appendChild(div);
         });
+        dropdown.classList.add('active');
+    } else {
+        dropdown.classList.remove('active');
+    }
+}
 
-        team1Element.addEventListener('click', () => {
-            team1Element.classList.remove('selected');
-            const newTeam = getRandomTeam(team2Element.textContent);
-            team1Element.textContent = newTeam;
-            team1Element.classList.add('selected');
-            
-            if (team2Element.textContent !== 'Tap to select team') {
-                checkForMatch([newTeam, team2Element.textContent]);
-            }
-        });
+function displayPlayerTeams(player) {
+    team1Element.textContent = player.teams[0];
+    team2Element.textContent = player.teams[1];
+    team1Element.classList.add('selected');
+    team2Element.classList.add('selected');
+    // Removed the automatic victory screen trigger
+}
 
-        team2Element.addEventListener('click', () => {
-            team2Element.classList.remove('selected');
-            const newTeam = getRandomTeam(team1Element.textContent);
-            team2Element.textContent = newTeam;
-            team2Element.classList.add('selected');
-            
-            if (team1Element.textContent !== 'Tap to select team') {
-                checkForMatch([team1Element.textContent, newTeam]);
-            }
-        });
+function checkForMatch(selectedTeams) {
+    const matchingPlayer = players.find(player => 
+        player.teams.includes(selectedTeams[0]) && 
+        player.teams.includes(selectedTeams[1])
+    );
 
-        document.getElementById('closeVictory').addEventListener('click', () => {
-            document.getElementById('victoryScreen').classList.remove('active');
-        });
+    if (matchingPlayer) {
+        showVictoryScreen(matchingPlayer.name);
+    }
+}
 
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
-                dropdown.classList.remove('active');
-            }
-        });
+function showVictoryScreen(playerName) {
+    const victoryScreen = document.getElementById('victoryScreen');
+    const playerNameElement = document.getElementById('victoryPlayerName');
+    playerNameElement.textContent = playerName;
+    victoryScreen.classList.add('active');
+}
+
+searchInput.addEventListener('input', (e) => {
+    updateDropdown(e.target.value);
+});
+
+team1Element.addEventListener('click', () => {
+    team1Element.classList.remove('selected');
+    const newTeam = getRandomTeam(team2Element.textContent);
+    team1Element.textContent = newTeam;
+    team1Element.classList.add('selected');
+    
+    if (team2Element.textContent !== 'Tap to select team') {
+        checkForMatch([newTeam, team2Element.textContent]);
+    }
+});
+
+team2Element.addEventListener('click', () => {
+    team2Element.classList.remove('selected');
+    const newTeam = getRandomTeam(team1Element.textContent);
+    team2Element.textContent = newTeam;
+    team2Element.classList.add('selected');
+    
+    if (team1Element.textContent !== 'Tap to select team') {
+        checkForMatch([team1Element.textContent, newTeam]);
+    }
+});
+
+document.getElementById('closeVictory').addEventListener('click', () => {
+    document.getElementById('victoryScreen').classList.remove('active');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!searchInput.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('active');
+    }
+});
     </script>
 </body>
 </html>
