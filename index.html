@@ -233,9 +233,10 @@
             <div class="team-box" id="team2">Team 2</div>
         </div>
         <div class="search-container">
-            <input type="text" class="search-input" placeholder="Enter player name..." id="playerInput">
-            <button id="checkPlayer">Check Player</button>
-        </div>
+    <input type="text" class="search-input" placeholder="Enter player name..." id="playerInput">
+    <div class="dropdown" id="dropdown"></div> <!-- Add this line -->
+    <button id="checkPlayer">Check Player</button>
+</div>
     </div>
 
     <div class="victory-screen" id="victoryScreen">
@@ -331,53 +332,99 @@
             { name: 'Richarlison', teams: ['Fluminense', 'Watford', 'Everton', 'Tottenham Hotspur'] },
             { name: 'Raheem Sterling', teams: ['Liverpool', 'Manchester City', 'Chelsea'] }
         ];
+const team1Element = document.getElementById('team1');
+const team2Element = document.getElementById('team2');
+const playerInput = document.getElementById('playerInput');
+const checkPlayerButton = document.getElementById('checkPlayer');
+const victoryScreen = document.getElementById('victoryScreen');
+const resultText = document.getElementById('resultText');
+const closeVictoryButton = document.getElementById('closeVictory');
 
-        const team1Element = document.getElementById('team1');
-        const team2Element = document.getElementById('team2');
-        const playerInput = document.getElementById('playerInput');
-        const checkPlayerButton = document.getElementById('checkPlayer');
-        const victoryScreen = document.getElementById('victoryScreen');
-        const resultText = document.getElementById('resultText');
-        const closeVictoryButton = document.getElementById('closeVictory');
+let selectedTeams = [];
 
-        let selectedTeams = [];
+function getRandomTeam() {
+    return teams[Math.floor(Math.random() * teams.length)];
+}
 
-        function getRandomTeam() {
-            return teams[Math.floor(Math.random() * teams.length)];
-        }
+function selectRandomTeams() {
+    selectedTeams = [getRandomTeam(), getRandomTeam()];
+    while (selectedTeams[0] === selectedTeams[1]) {
+        selectedTeams[1] = getRandomTeam();
+    }
+    team1Element.textContent = selectedTeams[0];
+    team2Element.textContent = selectedTeams[1];
+}
 
-        function selectRandomTeams() {
-            selectedTeams = [getRandomTeam(), getRandomTeam()];
-            while (selectedTeams[0] === selectedTeams[1]) {
-                selectedTeams[1] = getRandomTeam();
-            }
-            team1Element.textContent = selectedTeams[0];
-            team2Element.textContent = selectedTeams[1];
-        }
+function updateDropdown(searchText) {
+    const dropdown = document.getElementById('dropdown');
+    dropdown.innerHTML = ''; // Clear previous results
 
-        function checkPlayer() {
-            const playerName = playerInput.value.trim();
-            const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
+    if (!searchText) {
+        dropdown.classList.remove('active'); // Hide dropdown if input is empty
+        return;
+    }
 
-            if (player && player.teams.includes(selectedTeams[0]) && player.teams.includes(selectedTeams[1])) {
-                resultText.textContent = 'You Win!';
-                victoryScreen.classList.add('active');
-            } else {
-                resultText.textContent = 'Try Again';
-                victoryScreen.classList.add('active');
-            }
-        }
+    // Filter players whose names match the search text
+    const matchingPlayers = players.filter(player =>
+        player.name.toLowerCase().includes(searchText.toLowerCase())
+    );
 
-        function resetGame() {
-            selectRandomTeams();
-            playerInput.value = '';
-            victoryScreen.classList.remove('active');
-        }
+    if (matchingPlayers.length > 0) {
+        matchingPlayers.forEach(player => {
+            const div = document.createElement('div');
+            div.className = 'dropdown-item';
+            div.textContent = player.name;
+            div.addEventListener('click', () => {
+                // Autofill the input field with the selected player's name
+                playerInput.value = player.name;
+                dropdown.classList.remove('active'); // Hide dropdown
+            });
+            dropdown.appendChild(div);
+        });
+        dropdown.classList.add('active'); // Show dropdown
+    } else {
+        dropdown.classList.remove('active'); // Hide dropdown if no matches
+    }
+}
 
-        selectRandomTeams();
+function checkPlayer() {
+    const playerName = playerInput.value.trim();
+    const player = players.find(p => p.name.toLowerCase() === playerName.toLowerCase());
 
-        checkPlayerButton.addEventListener('click', checkPlayer);
-        closeVictoryButton.addEventListener('click', resetGame);
+    if (player && player.teams.includes(selectedTeams[0]) && player.teams.includes(selectedTeams[1])) {
+        resultText.textContent = 'You Win!';
+        victoryScreen.classList.add('active');
+    } else {
+        resultText.textContent = 'Try Again';
+        victoryScreen.classList.add('active');
+    }
+}
+
+function resetGame() {
+    selectRandomTeams();
+    playerInput.value = '';
+    victoryScreen.classList.remove('active');
+}
+
+// Initialize the game
+selectRandomTeams();
+
+// Event listeners
+playerInput.addEventListener('input', (e) => {
+    updateDropdown(e.target.value);
+});
+
+checkPlayerButton.addEventListener('click', checkPlayer);
+closeVictoryButton.addEventListener('click', resetGame);
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const dropdown = document.getElementById('dropdown');
+    const input = document.getElementById('playerInput');
+    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+        dropdown.classList.remove('active');
+    }
+});
     </script>
 </body>
 </html>
